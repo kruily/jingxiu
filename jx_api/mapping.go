@@ -23,3 +23,7 @@ var (
 		},
 	}
 )
+
+func AppendMapping() {
+
+}

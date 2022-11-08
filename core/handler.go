@@ -10,7 +10,6 @@ package core
 
 import (
 	"fmt"
-	"github.com/jingxiu1016/cli/jx_api"
 	"io"
 	"os"
 	"os/exec"
@@ -33,11 +32,14 @@ type GenController struct {
 }
 
 func GenHandles(s []string) {
+	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
 		if err := goGetJingXiuCli(); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return
 		}
+	} else { //TODO: 存在检测版本是否更新
+
 	}
 	u, _ := user.Current()
 	gen := &GenController{
@@ -48,7 +50,7 @@ func GenHandles(s []string) {
 		Package:    s[0],
 		Controller: firstUpper(s[0]),
 		Interface:  s[1],
-		Handle:     jx_api.APIHandleMapping[s[1]],
+		Handle:     C.Mapping.APIHandleMapping[s[1]],
 	}
 	// 根据模板生成文件，先根据控制器生成目录
 	err := os.Mkdir(gen.Path, os.ModePerm)
@@ -87,7 +89,7 @@ func currentHandle(filename string, gen *GenController, item string, tmp *templa
 }
 
 func goGetJingXiuCli() error {
-	cmd := exec.Command("go", "get", "github.com/jingxiu1016/cli@v1")
+	cmd := exec.Command("go", "get", "github.com/jingxiu1016/cli@"+C.Version)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Println("下载【打开输出流失败】")

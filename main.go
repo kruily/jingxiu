@@ -8,7 +8,9 @@
 
 package main
 
-import "github.com/jingxiu1016/cli/core"
+import (
+	"github.com/jingxiu1016/cli/core"
+)
 
 func main() {
 	core.JingXiu()

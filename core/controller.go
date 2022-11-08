@@ -10,7 +10,6 @@ package core
 
 import (
 	"fmt"
-	"github.com/jingxiu1016/cli/jx_api"
 	"github.com/urfave/cli/v2"
 )
 
@@ -18,9 +17,14 @@ import (
 // jingxiu create {$app} {$APIHandler}
 // $app 应用名称 $APIHandler 实现的接口
 func createController(c *cli.Context) error {
+	//1. read config from yaml
+	if err := Read("./mapping.yaml"); err != nil {
+		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
+		return err
+	}
 	args := c.Args()
 	var argsSlice []string
-	if _, ok := jx_api.APIHandleMapping[args.First()]; ok {
+	if _, ok := C.Mapping.APIHandleMapping[args.First()]; ok {
 		argsSlice = reverse(args.Slice())
 		fmt.Println("温馨提示：其实我并不建议你先写要实现的接口，你应该先将控制器明确...")
 	} else {

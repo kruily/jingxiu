@@ -16,7 +16,7 @@ import (
 
 var (
 	workspace, _ = os.Getwd()
-	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli\\tpl"
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
 	handlerPath  = workspace + "\\handler"
 	routerPath   = workspace + "\\router"
 )

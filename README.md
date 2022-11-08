@@ -1,5 +1,5 @@
 # jingxiu web服务开发脚手架
-version: v0.0.1 
+version: v0.0.1  
 
 1. 开始一个项目
    ```shell

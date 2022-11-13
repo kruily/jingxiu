@@ -36,6 +36,15 @@ func generateRouters(c *cli.Context) error {
 		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
 		return err
 	}
+	// 确定模板地址
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
+	// 先查找是否不存在cli,不存在就下载
+	if ok, _ := PathExists(templatePath); !ok {
+		if err := goGetJingXiuCli(); err != nil {
+			fmt.Println("创建失败【cli 模板集下载失败】")
+			return err
+		}
+	}
 	args := c.Args()
 	if args.Len() <= 0 {
 		rangeDir(handlerPath)

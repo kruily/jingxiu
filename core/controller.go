@@ -11,6 +11,7 @@ package core
 import (
 	"fmt"
 	"github.com/urfave/cli/v2"
+	"os"
 )
 
 // createController 定义生成应用控制器命令：
@@ -22,6 +23,8 @@ func createController(c *cli.Context) error {
 		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
 		return err
 	}
+	// 确定模板地址
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
 	args := c.Args()
 	var argsSlice []string
 	if _, ok := C.Mapping.APIHandleMapping[args.First()]; ok {

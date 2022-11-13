@@ -9,12 +9,15 @@
 package core
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"io"
 	"os"
 	"os/exec"
+	"sync"
 )
 
 var templateOrigin = `https://github.com/jingxiu1016/jingxiu_initial_workspace.git`
@@ -36,7 +39,7 @@ var templateOrigin = `https://github.com/jingxiu1016/jingxiu_initial_workspace.g
 *			- router			# api 路由层，生成的路由文件，存储在以下
 *			- services			# gRpc 客户端接入控制层，可选
 *			- gateway.yaml		# 网关配置文件
-*			- main.go			# 接口启动
+*			- jingxiu.go			# 接口启动
 *			- go.mod
 *		- services				# 微服务服务层，可选
 *		- go.work				# go 工作空间目录
@@ -47,14 +50,14 @@ func createProject(c *cli.Context) error {
 	// git clone
 	// 模板项目下载
 	if err := clone(); err != nil {
-		fmt.Println("初始化项目【克隆失败】...")
+		color.Red("初始化项目【克隆失败】...")
 		return err
 	}
 	//2. 修改文件名
 	rpc := c.Bool("rpc")
 	args := c.Args()
 	if err := os.Rename("./jingxiu_initial_workspace", args.First()); err != nil {
-		fmt.Println("初始化项目【更改文件名失败】...")
+		color.Red("初始化项目【更改文件名失败】...")
 		return err
 	}
 	// 如果用户主动写入有 --rpc 直接返回，不删除
@@ -62,20 +65,20 @@ func createProject(c *cli.Context) error {
 		return nil
 	} else {
 		if err := os.RemoveAll(args.First() + "\\services"); err != nil {
-			fmt.Println("初始化项目【取消rpc服务端失败】...")
+			color.Red("初始化项目【取消rpc服务端失败】...")
 			return err
 		}
 		if err := os.RemoveAll(args.First() + "\\gateway\\services"); err != nil {
-			fmt.Println("初始化项目【取消rpc客户端失败】...")
+			color.Red("初始化项目【取消rpc服务端失败】...")
 			return err
 		}
 	}
 	// 删除.git 文件
 	if err := os.RemoveAll(".git"); err != nil {
-		fmt.Println("初始化项目...")
+		color.Red("初始化项目失败...")
 		return err
 	}
-	fmt.Println("初始化项目成功")
+	color.Blue("初始化项目成功")
 	return nil
 }
 
@@ -87,22 +90,60 @@ func mkdir(path string) error {
 }
 
 func clone() error {
+	color.Blue("正在初始化项目,请稍后...")
 	cmd := exec.Command("git", "clone", templateOrigin)
+	return PrintCmdOutput(cmd)
+}
+
+func PrintCmdOutput(cmd *exec.Cmd) error {
+	cmd.Stdin = os.Stdin
+	var wg sync.WaitGroup
+	wg.Add(2)
+	//捕获标准输出
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Println("克隆【打开输出流失败】")
 		return err
 	}
-	defer stdout.Close()
-	if err := cmd.Start(); err != nil {
-		fmt.Println("克隆【命令运行输出流失败】")
+	readout := bufio.NewReader(stdout)
+	go func() {
+		defer wg.Done()
+		GetOutput(readout)
+	}()
+
+	//捕获标准错误
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
 		return err
 	}
-	if opBytes, err := io.ReadAll(stdout); err != nil { // 读取输出结果
-		fmt.Println(err.Error())
+	readerr := bufio.NewReader(stderr)
+	go func() {
+		defer wg.Done()
+		GetOutput(readerr)
+	}()
+
+	//执行命令
+	err = cmd.Run()
+	if err != nil {
 		return err
-	} else {
-		fmt.Println(string(opBytes))
 	}
+	wg.Wait()
 	return nil
+}
+
+func GetOutput(reader *bufio.Reader) {
+	var sumOutput string //统计屏幕的全部输出内容
+	outputBytes := make([]byte, 200)
+	for {
+		n, err := reader.Read(outputBytes) //获取屏幕的实时输出(并不是按照回车分割，所以要结合sumOutput)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			fmt.Println(err)
+			sumOutput += err.Error()
+		}
+		output := string(outputBytes[:n])
+		fmt.Print(output) //输出屏幕内容
+		sumOutput += output
+	}
 }

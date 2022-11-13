@@ -1,5 +1,5 @@
 /**
-* @file: main.go ==>
+* @file: jingxiu.go ==>
 * @package: jingxiu_cli
 * @author: jingxiu
 * @since: 2022/11/7

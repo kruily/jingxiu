@@ -38,8 +38,6 @@ func GenHandles(s []string) {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return
 		}
-	} else { //TODO: 存在检测版本是否更新
-
 	}
 	u, _ := user.Current()
 	gen := &GenController{

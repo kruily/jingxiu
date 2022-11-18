@@ -59,6 +59,11 @@ func createProject(c *cli.Context) error {
 		color.Red("初始化项目【更改文件名失败】...")
 		return err
 	}
+	//3. 删除.git 文件
+	if err := os.RemoveAll("/.git/"); err != nil {
+		color.Red("初始化项目失败...")
+		return err
+	}
 	// 如果用户主动写入有 --rpc 直接返回，不删除
 	if rpc {
 		return nil
@@ -72,11 +77,7 @@ func createProject(c *cli.Context) error {
 			return err
 		}
 	}
-	// 删除.git 文件
-	if err := os.RemoveAll(".git"); err != nil {
-		color.Red("初始化项目失败...")
-		return err
-	}
+
 	color.Blue("初始化项目成功")
 	return nil
 }

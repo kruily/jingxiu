@@ -68,10 +68,10 @@ func createHandle(c *cli.Context) error {
 		"CurrentHandle": s[1],
 		"Controller":    firstUpper(s[0]),
 	}
-	filename := strings.ToLower(s[0]) + ".go"
-	file, err := os.Create(handlerPath + "\\" + s[0] + "\\" + filename)
+	filename := mapper["File"].(string)
+	file, err := os.Create(mapper["Path"].(string) + "\\" + filename)
 	if err != nil {
-		panic(handlerPath + "\\" + s[0] + "\\" + filename + "文件生成错误: " + err.Error())
+		panic(mapper["Path"].(string) + "\\" + filename + "文件生成错误: " + err.Error())
 	}
 	defer file.Close()
 	if err = handletmp.Execute(file, mapper); err != nil {

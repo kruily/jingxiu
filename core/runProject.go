@@ -8,12 +8,18 @@
 
 package core
 
-import "github.com/urfave/cli/v2"
+import (
+	"github.com/fatih/color"
+	"github.com/urfave/cli/v2"
+)
 
 func runProject(c *cli.Context) error {
+	runGateWay()
 	return nil
 }
 
-func run() {
-
+func runGateWay() {
+	if err := command("go", "run", "./gateway/main.go"); err != nil {
+		color.Red("项目运行【失败】：" + err.Error())
+	}
 }

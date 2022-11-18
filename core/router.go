@@ -32,7 +32,7 @@ var register = make(map[string][]*GenRoute)
 
 func generateRouters(c *cli.Context) error {
 	//1. read config from yaml
-	if err := Read("./mapping.yaml"); err != nil {
+	if err := Read("./gateway/mapping.yaml"); err != nil {
 		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
 		return err
 	}
@@ -40,7 +40,7 @@ func generateRouters(c *cli.Context) error {
 	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
-		if err := goGetJingXiuCli(); err != nil {
+		if err := command("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return err
 		}
@@ -75,9 +75,14 @@ func rangeDir(path string) {
 	}
 	for _, item := range dir {
 		if item.IsDir() {
+			fmt.Println("进入目录：" + handlerPath + "\\" + item.Name())
 			rangeDir(handlerPath + "\\" + item.Name())
 		} else {
 			sr := strings.Split(path, "\\")
+			if !strings.Contains(item.Name(), ".go") {
+				continue
+			}
+			fmt.Println("扫描接口文件：" + path + "\\" + item.Name())
 			register[sr[len(sr)-1]] = append(register[sr[len(sr)-1]], openFile(path+"\\"+item.Name())...)
 		}
 	}
@@ -85,6 +90,9 @@ func rangeDir(path string) {
 
 // 文件扫描
 func openFile(file string) []*GenRoute {
+	if !strings.Contains(file, ".go") {
+		return nil
+	}
 	open, err := os.Open(file)
 	if err != nil {
 		panic(file + "文件打开错误" + err.Error())
@@ -184,7 +192,6 @@ func indexBrackets(s string) (int, int) {
 }
 
 func transitMiddle(mi []string) string {
-	// TODO: 如何让开发者扩展中间件的生成mapping
 	str := ""
 	for _, item := range mi {
 		str += C.Mapping.APIMiddlewareMapping[item] + ", "

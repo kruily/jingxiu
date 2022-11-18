@@ -48,7 +48,7 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-func commend(name string, args ...string) error {
+func command(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

@@ -73,19 +73,19 @@ func someCommands() []*cli.Command {
 			Aliases: []string{"m"},
 			Usage:   "在当前目录下，从配置的链接数据库中生成dao层",
 			Action:  generateDatabase,
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:     "src",
-					Aliases:  []string{"s"},
-					Usage:    "指定要读取的配置文件",
-					Required: true,
-				},
-			},
+			//Flags: []cli.Flag{
+			//	&cli.StringFlag{
+			//		Name:     "src",
+			//		Aliases:  []string{"s"},
+			//		Usage:    "指定要读取的配置文件",
+			//		Required: true,
+			//	},
+			//},
 		},
-		{
-			Name:   "run",
-			Usage:  "在项目目录下运行项目...",
-			Action: runProject,
-		},
+		//{
+		//	Name:   "run",
+		//	Usage:  "在项目目录下运行项目...",
+		//	Action: runProject,
+		//},
 	}
 }

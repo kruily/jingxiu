@@ -38,9 +38,14 @@ func createHandle(c *cli.Context) error {
 		color.Red("生成接口需要提供一个控制器的名字、一个接口名字")
 		return errors.New("生成接口需要提供一个控制器的名字、一个接口名字")
 	}
+	//1. read config from yaml
+	if err := Read("./gateway/mapping.yaml"); err != nil {
+		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
+		return err
+	}
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
-		if err := commend("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
+		if err := command("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return errors.New("创建失败【cli 模板集下载失败】")
 		}
@@ -52,19 +57,21 @@ func createHandle(c *cli.Context) error {
 	}
 	s := args.Slice()
 	// 创建接口文件
+	// 确定模板地址
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
 	handletmp := template.Must(template.ParseFiles(templatePath + "\\handle.tpl"))
 	mapper := map[string]interface{}{
 		"File":          s[1] + ".go",
-		"Path":          handlerPath + s[0],
+		"Path":          handlerPath + "\\" + s[0],
 		"Date":          time.Now().Format("01/02/2006"),
 		"Package":       s[0],
 		"CurrentHandle": s[1],
 		"Controller":    firstUpper(s[0]),
 	}
 	filename := strings.ToLower(s[0]) + ".go"
-	file, err := os.Create(handlerPath + s[0] + "\\" + filename)
+	file, err := os.Create(handlerPath + "\\" + s[0] + "\\" + filename)
 	if err != nil {
-		panic(handlerPath + s[0] + filename + "文件生成错误: " + err.Error())
+		panic(handlerPath + "\\" + s[0] + "\\" + filename + "文件生成错误: " + err.Error())
 	}
 	defer file.Close()
 	if err = handletmp.Execute(file, mapper); err != nil {
@@ -76,7 +83,7 @@ func createHandle(c *cli.Context) error {
 func GenHandles(s []string) {
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
-		if err := commend("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
+		if err := command("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return
 		}
@@ -84,7 +91,7 @@ func GenHandles(s []string) {
 	u, _ := user.Current()
 	gen := &GenController{
 		File:       s[0] + ".go",
-		Path:       handlerPath + s[0],
+		Path:       handlerPath + "\\" + s[0],
 		User:       u.Name,
 		Date:       time.Now().Format("01/02/2006"),
 		Package:    s[0],

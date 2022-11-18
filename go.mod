@@ -1,4 +1,4 @@
-module github.com/jingxiu1016/cli
+module github.com/jingxiu1016/jingxiu
 
 go 1.19
 

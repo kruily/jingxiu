@@ -13,9 +13,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
-	"io"
 	"os"
-	"os/exec"
 	"os/user"
 	"strings"
 	"text/template"
@@ -42,7 +40,7 @@ func createHandle(c *cli.Context) error {
 	}
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
-		if err := goGetJingXiuCli(); err != nil {
+		if err := commend("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return errors.New("创建失败【cli 模板集下载失败】")
 		}
@@ -52,15 +50,33 @@ func createHandle(c *cli.Context) error {
 		fmt.Println("不存在命名控制器【" + args.First() + "】")
 		return errors.New("不存在命名控制器【" + args.First() + "】")
 	}
+	s := args.Slice()
 	// 创建接口文件
-	
+	handletmp := template.Must(template.ParseFiles(templatePath + "\\handle.tpl"))
+	mapper := map[string]interface{}{
+		"File":          s[1] + ".go",
+		"Path":          handlerPath + s[0],
+		"Date":          time.Now().Format("01/02/2006"),
+		"Package":       s[0],
+		"CurrentHandle": s[1],
+		"Controller":    firstUpper(s[0]),
+	}
+	filename := strings.ToLower(s[0]) + ".go"
+	file, err := os.Create(handlerPath + s[0] + "\\" + filename)
+	if err != nil {
+		panic(handlerPath + s[0] + filename + "文件生成错误: " + err.Error())
+	}
+	defer file.Close()
+	if err = handletmp.Execute(file, mapper); err != nil {
+		panic(file.Name() + "模板文件生成失败: " + err.Error())
+	}
 	return nil
 }
 
 func GenHandles(s []string) {
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
-		if err := goGetJingXiuCli(); err != nil {
+		if err := commend("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return
 		}
@@ -68,7 +84,7 @@ func GenHandles(s []string) {
 	u, _ := user.Current()
 	gen := &GenController{
 		File:       s[0] + ".go",
-		Path:       workspace + "\\handle\\" + s[0],
+		Path:       handlerPath + s[0],
 		User:       u.Name,
 		Date:       time.Now().Format("01/02/2006"),
 		Package:    s[0],
@@ -79,7 +95,6 @@ func GenHandles(s []string) {
 	// 根据模板生成文件，先根据控制器生成目录
 	err := os.Mkdir(gen.Path, os.ModePerm)
 	if err != nil {
-		//panic(gen.Path + "文件夹生成错误: " + err.Error())
 		fmt.Println(gen.Path + "文件夹生成错误: " + err.Error())
 		return
 	}
@@ -110,25 +125,4 @@ func currentHandle(filename string, gen *GenController, item string, tmp *templa
 	if err = tmp.Execute(file, gen); err != nil {
 		panic(file.Name() + "模板文件生成失败: " + err.Error())
 	}
-}
-
-func goGetJingXiuCli() error {
-	cmd := exec.Command("go", "get", "github.com/jingxiu1016/cli@"+C.Version)
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		fmt.Println("下载【打开输出流失败】")
-		return err
-	}
-	defer stdout.Close()
-	if err := cmd.Start(); err != nil {
-		fmt.Println("下载【命令运行输出流失败】")
-		return err
-	}
-	if opBytes, err := io.ReadAll(stdout); err != nil { // 读取输出结果
-		fmt.Println(err.Error())
-		return err
-	} else {
-		fmt.Println(string(opBytes))
-	}
-	return nil
 }

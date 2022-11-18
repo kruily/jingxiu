@@ -20,7 +20,7 @@ import (
 // $app 应用名称 $APIHandler 实现的接口
 func createController(c *cli.Context) error {
 	//1. read config from yaml
-	if err := Read("./mapping.yaml"); err != nil {
+	if err := Read(".gateway/mapping.yaml"); err != nil {
 		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
 		return err
 	}

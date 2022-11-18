@@ -17,8 +17,8 @@ import (
 var (
 	workspace, _ = os.Getwd()
 	templatePath string
-	handlerPath  = workspace + "\\handle"
-	routerPath   = workspace + "\\router"
+	handlerPath  = workspace + "\\gateway\\handle"
+	routerPath   = workspace + "\\gateway\\router"
 )
 
 // JingXiu jingXiu 主命令
@@ -54,13 +54,13 @@ func someCommands() []*cli.Command {
 			Name:    "create",
 			Aliases: []string{"c"},
 			Usage:   "创建应用控制器",
-			Action:  createHandle,
+			Action:  createController,
 		},
 		{
 			Name:    "handle",
 			Aliases: []string{"h"},
 			Usage:   "为一个控制器新增一个接口文件",
-			Action:  createController,
+			Action:  createHandle,
 		},
 		{
 			Name:    "route",
@@ -81,6 +81,11 @@ func someCommands() []*cli.Command {
 					Required: true,
 				},
 			},
+		},
+		{
+			Name:   "run",
+			Usage:  "在项目目录下运行项目...",
+			Action: runProject,
 		},
 	}
 }

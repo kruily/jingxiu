@@ -9,7 +9,10 @@
 package core
 
 import (
+	"errors"
 	"fmt"
+	"github.com/fatih/color"
+	"github.com/urfave/cli/v2"
 	"io"
 	"os"
 	"os/exec"
@@ -29,6 +32,29 @@ type GenController struct {
 	Interface     string   // 要生成实现的接口
 	Handle        []string // 要生成的所有方法名称
 	CurrentHandle string   // 当前要生成的方法
+}
+
+func createHandle(c *cli.Context) error {
+	args := c.Args()
+	if args.Len() <= 1 {
+		color.Red("生成接口需要提供一个控制器的名字、一个接口名字")
+		return errors.New("生成接口需要提供一个控制器的名字、一个接口名字")
+	}
+	// 先查找是否不存在cli,不存在就下载
+	if ok, _ := PathExists(templatePath); !ok {
+		if err := goGetJingXiuCli(); err != nil {
+			fmt.Println("创建失败【cli 模板集下载失败】")
+			return errors.New("创建失败【cli 模板集下载失败】")
+		}
+	}
+	// 判断是否存在命名控制器
+	if ok, _ := PathExists(handlerPath + "\\" + args.First()); !ok {
+		fmt.Println("不存在命名控制器【" + args.First() + "】")
+		return errors.New("不存在命名控制器【" + args.First() + "】")
+	}
+	// 创建接口文件
+	
+	return nil
 }
 
 func GenHandles(s []string) {

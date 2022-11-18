@@ -10,6 +10,7 @@ package core
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"os"
 )
@@ -32,6 +33,10 @@ func createController(c *cli.Context) error {
 		fmt.Println("温馨提示：其实我并不建议你先写要实现的接口，你应该先将控制器明确...")
 	} else {
 		argsSlice = args.Slice()
+	}
+	if len(argsSlice) <= 1 {
+		color.Red("创建一个控制器时，需要指定其要实现的API接口")
+		return nil
 	}
 	GenHandles(argsSlice)
 	return nil

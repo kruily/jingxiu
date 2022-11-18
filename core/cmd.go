@@ -9,8 +9,8 @@
 package core
 
 import (
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
-	"log"
 	"os"
 )
 
@@ -30,7 +30,7 @@ func JingXiu() {
 		Flags:    []cli.Flag{},
 	}
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal("命令未启动：" + err.Error())
+		color.Red(err.Error())
 	}
 }
 
@@ -54,6 +54,12 @@ func someCommands() []*cli.Command {
 			Name:    "create",
 			Aliases: []string{"c"},
 			Usage:   "创建应用控制器",
+			Action:  createHandle,
+		},
+		{
+			Name:    "handle",
+			Aliases: []string{"h"},
+			Usage:   "为一个控制器新增一个接口文件",
 			Action:  createController,
 		},
 		{

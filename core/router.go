@@ -70,7 +70,6 @@ func generateRouters(c *cli.Context) error {
 func rangeDir(path string) {
 	dir, err := os.ReadDir(path)
 	if err != nil {
-		//panic("接口目录扫描失败！" + err.Error())
 		fmt.Println("接口目录扫描失败！", err.Error())
 		return
 	}

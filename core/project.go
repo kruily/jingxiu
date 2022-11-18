@@ -10,7 +10,6 @@ package core
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
@@ -79,13 +78,6 @@ func createProject(c *cli.Context) error {
 		return err
 	}
 	color.Blue("初始化项目成功")
-	return nil
-}
-
-func mkdir(path string) error {
-	if err := os.MkdirAll(path, os.ModePerm); err != nil {
-		return errors.New("项目初始化：" + path + "创建失败")
-	}
 	return nil
 }
 

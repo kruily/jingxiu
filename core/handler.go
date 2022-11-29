@@ -45,7 +45,7 @@ func createHandle(c *cli.Context) error {
 	}
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
-		if err := command("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {
+		if err := command("go", "get", "github.com/jingxiu1016/jingxiu@"+C.Version); err != nil {
 			fmt.Println("创建失败【cli 模板集下载失败】")
 			return errors.New("创建失败【cli 模板集下载失败】")
 		}

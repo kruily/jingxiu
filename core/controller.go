@@ -25,7 +25,7 @@ func createController(c *cli.Context) error {
 		return err
 	}
 	// 确定模板地址
-	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\jingxiu@" + C.Version + "\\tpl"
 	args := c.Args()
 	var argsSlice []string
 	if _, ok := C.Mapping.APIHandleMapping[args.First()]; ok {

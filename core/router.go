@@ -37,7 +37,7 @@ func generateRouters(c *cli.Context) error {
 		return err
 	}
 	// 确定模板地址
-	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\jingxiu@" + C.Version + "\\tpl"
 	// 先查找是否不存在cli,不存在就下载
 	if ok, _ := PathExists(templatePath); !ok {
 		if err := command("go", "get", "github.com/jingxiu1016/cli@"+C.Version); err != nil {

@@ -14,6 +14,18 @@ import (
     "github.com/gin-gonic/gin"
 )
 
+var instance *{{.higherDir}}.{{.pak}}
+
+func init(){
+    instance = {{.higherDir}}.New{{.pak}}Handle()
+    Register(RegisterRoute{
+    	Ro: instance,
+        Do: func(e *gin.Engine) {
+            {{.pak}}Router(e)
+        },
+    })
+}
+
 func {{.funcName}}(c *gin.Engine){
     instance := {{.higherDir}}.New{{.pak}}Handle()
     group := c.Group("/{{.group}}/")

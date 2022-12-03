@@ -160,15 +160,16 @@ func writeRouterFile(path, key string, value []*GenRoute) {
 	funcName := firstUpper(key) + "Router"
 	//写入文件时，使用带缓存的 *Writer
 	data := map[string]interface{}{
-		"filename":  filename,
-		"filepath":  path,
-		"date":      time.Now().Format("01/02/2006"),
-		"doc":       key + " 路由",
-		"funcName":  funcName,
-		"higherDir": key,
-		"pak":       firstUpper(key),
-		"group":     key,
-		"routers":   value,
+		"filename":     filename,
+		"filepath":     path,
+		"date":         time.Now().Format("01/02/2006"),
+		"doc":          key + " 路由",
+		"funcName":     funcName,
+		"higherDir":    key,
+		"pak":          firstUpper(key),
+		"group":        key,
+		"routers":      value,
+		"middleImport": middleImport(value),
 	}
 	tmp := template.Must(template.ParseFiles(templatePath + "\\route.tpl"))
 	create, err := os.OpenFile(path+"\\"+filename, os.O_CREATE, 0666)
@@ -180,6 +181,15 @@ func writeRouterFile(path, key string, value []*GenRoute) {
 	if err != nil {
 		panic(filename + " 模板文件生成失败：" + err.Error())
 	}
+}
+
+func middleImport(value []*GenRoute) bool {
+	for _, route := range value {
+		if len(route.Middleware) > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func trimPrefix(s string) string {

@@ -10,7 +10,7 @@ package router
 
 import (
     "gateway/handle/{{.higherDir}}"
-    "gateway/middleware"
+    {{if middleImport }}"gateway/middleware"{{end}}
     "github.com/gin-gonic/gin"
 )
 
@@ -27,7 +27,6 @@ func init(){
 }
 
 func {{.funcName}}(c *gin.Engine){
-    instance := {{.higherDir}}.New{{.pak}}Handle()
     group := c.Group("/{{.group}}/")
     { {{range $k,$v := .routers}}{{if $v.Route}}
        // {{$v.Doc}}

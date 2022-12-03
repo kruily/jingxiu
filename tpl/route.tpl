@@ -10,7 +10,7 @@ package router
 
 import (
     "gateway/handle/{{.higherDir}}"
-    {{if middleImport }}"gateway/middleware"{{end}}
+    {{if .middleImport }}"gateway/middleware"{{end}}
     "github.com/gin-gonic/gin"
 )
 

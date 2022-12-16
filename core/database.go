@@ -14,9 +14,13 @@ import (
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"os"
+	"strings"
 )
 
 func generateDatabase(c *cli.Context) error {
@@ -52,9 +56,20 @@ func ConnectDB(path string) (conn *gorm.DB, err error) {
 			return nil, errors.New("配置文件读取失败：" + err.Error())
 		}
 	}
-	conn, err = gorm.Open(mysql.Open(config.DB.Source), &gorm.Config{})
+	switch strings.TrimSpace(strings.ToLower(config.DB.Type)) {
+	case "mysql":
+		conn, err = gorm.Open(mysql.Open(config.DB.Source))
+	case "sqlite":
+		conn, err = gorm.Open(sqlite.Open(config.DB.Source))
+	case "postgre":
+		conn, err = gorm.Open(postgres.Open(config.DB.Source))
+	case "mongodb":
+	case "sqlserver":
+		conn, err = gorm.Open(sqlserver.Open(config.DB.Source))
+	}
+
 	if err != nil {
-		//panic(fmt.Errorf("cannot establish db connection: %w", err))
+		// panic(fmt.Errorf("cannot establish db connection: %w", err))
 		return nil, errors.New("数据库链接失败：" + err.Error())
 	}
 	return conn, nil

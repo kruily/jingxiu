@@ -58,7 +58,7 @@ func createHandle(c *cli.Context) error {
 	s := args.Slice()
 	// 创建接口文件
 	// 确定模板地址
-	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\cli@" + C.Version + "\\tpl"
+	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\jingxiu@" + C.Version + "\\tpl"
 	handletmp := template.Must(template.ParseFiles(templatePath + "\\handle.tpl"))
 	mapper := map[string]interface{}{
 		"File":          s[1] + ".go",

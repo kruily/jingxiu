@@ -82,6 +82,12 @@ func someCommands() []*cli.Command {
 			//	},
 			//},
 		},
+		{
+			Name:    "tidy",
+			Aliases: []string{"t"},
+			Usage:   "下载依赖",
+			Action:  downloadDepend,
+		},
 		//{
 		//	Name:   "run",
 		//	Usage:  "在项目目录下运行项目...",

@@ -21,7 +21,7 @@ go install github.com/jingxiu1016/jingxiu@v0.1.6
    
    目录示览
    
-   ![img.png](img.png)
+   ![img.png](static/img.png)
 2. 创建一个应用
     ```shell
     jingxiu create ${controller-name} ${interface-name}
@@ -38,9 +38,9 @@ go install github.com/jingxiu1016/jingxiu@v0.1.6
    
    并会在jingxiu-intro/gateway/handle目录下创建一个名为app的文件夹，其内文件包含了业务控制器，以及生成的接口文件，开发人员仅需编写业务逻辑代码。
    
-   ![img_1.png](img_1.png)
+   ![img_1.png](static/img_1.png)
    开发人员需要注意填写接口注释，用以后面导出路由文件
-   ![img_2.png](img_2.png)
+   ![img_2.png](static/img_2.png)
 3. 增加一个接口文件
    ```shell
    jingxiu handle ${controller-name} ${interface-name} 
@@ -52,7 +52,7 @@ go install github.com/jingxiu1016/jingxiu@v0.1.6
    ```
    此命令需要存在相应的控制器。 并在对应的控制器下生成名为register的文件
 
-   ![img_3.png](img_3.png)
+   ![img_3.png](static/img_3.png)
 4. 生成数据库模型
     ```shell
     jingxiu model

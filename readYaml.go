@@ -6,7 +6,7 @@
 * @desc: //TODO
  */
 
-package core
+package main
 
 import (
 	"gopkg.in/yaml.v3"

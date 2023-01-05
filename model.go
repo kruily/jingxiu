@@ -1,12 +1,12 @@
 /**
-* @file: database.go ==> core
-* @package: core
+* @file: model.go ==>
+* @package: main
 * @author: jingxiu
-* @since: 2022/11/7
+* @since: 2023/1/5
 * @desc: //TODO
  */
 
-package core
+package main
 
 import (
 	"errors"
@@ -23,13 +23,22 @@ import (
 	"strings"
 )
 
-func generateDatabase(c *cli.Context) error {
+func init() {
+	registerCommand(&cli.Command{
+		Name:    "model",
+		Aliases: []string{"m"},
+		Usage:   "在当前目录下，从配置的链接数据库中生成dao层",
+		Action:  model,
+	})
+}
+
+func model(ctx *cli.Context) error {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:      "./data/query",
 		Mode:         gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 		ModelPkgPath: "./data/model",
 	})
-	conn, err := ConnectDB(workspace + "\\gateway\\gateway.yaml")
+	conn, err := ConnectDB(JingXiu.HandlePath + "\\gateway\\gateway.yaml")
 	if err != nil {
 		fmt.Printf("%#v", err.Error())
 		return err

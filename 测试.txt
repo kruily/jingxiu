@@ -1,0 +1,11 @@
+// Create
+// @Handle Create
+// @Summary 创建一个app
+// @Description 创建一个app
+// @Accept json
+// @Produce  json
+// @Param q	query string	false	"name search by q"	Format(email)
+// @Success 200 {object} $(返回数据模型) "请求成功"
+// @Failure 400 {object} $(返回数据模型) "请求错误"
+// @Router /app/create/:id [post]
+// @Middleware [JWT]

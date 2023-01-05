@@ -1,12 +1,12 @@
 /**
-* @file: project.go ==> core
-* @package: core
+* @file: start.go ==>
+* @package: main
 * @author: jingxiu
-* @since: 2022/11/7
-* @desc: 生产一个项目
+* @since: 2022/12/18
+* @desc: //TODO
  */
 
-package core
+package main
 
 import (
 	"bufio"
@@ -21,31 +21,24 @@ import (
 
 var templateOrigin = `https://github.com/jingxiu1016/jingxiu_initial_workspace.git`
 
-// 创建一个目录如下的项目（项目名称）
-/**
-*	project
-*		- common				# 公共组件包，包含一些常见的内容
-*			- go.mod
-*			- README.md
-*		- data					# 数据转化层，包含dao层和查询层
-*			- go.mod
-*			- README.md
-*		- gateway				# api 网关层，作为所有api访问的入口
-*			- config			# api 网关配置管理中心
-*				- config.go
-*			- handle			# api 入口层, 生成的控制器文件存储在以下
-*			- middleware		# api 中间件
-*			- router			# api 路由层，生成的路由文件，存储在以下
-*			- services			# gRpc 客户端接入控制层，可选
-*			- gateway.yaml		# 网关配置文件
-*			- jingxiu.go			# 接口启动
-*			- go.mod
-*		- services				# 微服务服务层，可选
-*		- go.work				# go 工作空间目录
- */
+func init() {
+	registerCommand(&cli.Command{
+		Name:    "start",
+		Aliases: []string{"s"},
+		Usage:   "开始一个jingxiu cli web脚手架项目",
+		Action:  start,
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:     "rpc",
+				Aliases:  []string{"r"},
+				Usage:    "是否生产 gRPC 工作目录",
+				Required: false,
+			},
+		},
+	})
+}
 
-// 运行命令：jingxiu start --rpc ${project-name}
-func createProject(c *cli.Context) error {
+func start(ctx *cli.Context) error {
 	// git clone
 	// 模板项目下载
 	if err := clone(); err != nil {
@@ -53,8 +46,8 @@ func createProject(c *cli.Context) error {
 		return err
 	}
 	//2. 修改文件名
-	rpc := c.Bool("rpc")
-	args := c.Args()
+	rpc := ctx.Bool("rpc")
+	args := ctx.Args()
 	if err := os.Rename("./jingxiu_initial_workspace", args.First()); err != nil {
 		color.Red("初始化项目【更改文件名失败】...")
 		return err
@@ -77,7 +70,6 @@ func createProject(c *cli.Context) error {
 			return err
 		}
 	}
-
 	color.Blue("初始化项目成功")
 	return nil
 }

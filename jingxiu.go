@@ -8,10 +8,7 @@
 
 package main
 
-import (
-	"github.com/jingxiu1016/jingxiu/core"
-)
-
 func main() {
-	core.JingXiu()
+	//core.JingXiu()
+	GetJingXiuCLI().Run()
 }

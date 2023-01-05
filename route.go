@@ -1,16 +1,16 @@
 /**
-* @file: router.go ==> core
-* @package: core
+* @file: route.go ==>
+* @package: main
 * @author: jingxiu
-* @since: 2022/11/7
+* @since: 2022/12/18
 * @desc: //TODO
  */
 
-package core
+package main
 
 import (
 	"bufio"
-	"fmt"
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"io"
 	"os"
@@ -18,6 +18,15 @@ import (
 	"text/template"
 	"time"
 )
+
+func init() {
+	registerCommand(&cli.Command{
+		Name:    "route",
+		Aliases: []string{"r"},
+		Usage:   "生成路由组",
+		Action:  route,
+	})
+}
 
 type GenRoute struct {
 	Handle     string // 解析匹配到的方法名称
@@ -30,37 +39,28 @@ type GenRoute struct {
 
 var register = make(map[string][]*GenRoute)
 
-func generateRouters(c *cli.Context) error {
+func route(ctx *cli.Context) error {
 	//1. read config from yaml
-	if err := Read("./gateway/mapping.yaml"); err != nil {
-		fmt.Println("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
+	if err := Read("./etc/mapping.yaml"); err != nil {
+		color.Red("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
 		return err
 	}
-	// 确定模板地址
-	templatePath = os.Getenv("GOPATH") + "\\pkg\\mod\\github.com\\jingxiu1016\\jingxiu@" + C.Version + "\\tpl"
-	// 先查找是否不存在cli,不存在就下载
-	if ok, _ := PathExists(templatePath); !ok {
-		if err := command("go", "get", "github.com/jingxiu1016/jingxiu@"+C.Version); err != nil {
-			fmt.Println("创建失败【cli 模板集下载失败】")
-			return err
-		}
-	}
-	args := c.Args()
+	args := ctx.Args()
 	if args.Len() <= 0 {
-		rangeDir(handlerPath)
+		rangeDir(JingXiu.HandlePath)
 		for key, value := range register {
-			writeRouterFile(routerPath, key, value)
+			writeRouterFile(JingXiu.RouterPath, key, value)
 		}
 	} else {
 		if args.Slice()[0] == "append" {
 			for _, item := range args.Slice()[1:] {
-				rangeDir(handlerPath + "\\" + item)
+				rangeDir(JingXiu.HandlePath + "\\" + item)
 				for key, value := range register {
-					writeRouterFile(routerPath, key, value)
+					writeRouterFile(JingXiu.RouterPath, key, value)
 				}
 			}
 		} else {
-			fmt.Println("如果生成路由文件需要指定某个文件的时候，那么应该使用 append 命令")
+			color.Green("如果生成路由文件需要指定某个文件的时候，那么应该使用 append 命令")
 		}
 	}
 	return nil
@@ -70,19 +70,19 @@ func generateRouters(c *cli.Context) error {
 func rangeDir(path string) {
 	dir, err := os.ReadDir(path)
 	if err != nil {
-		fmt.Println("接口目录扫描失败！", err.Error())
+		color.Red("接口目录扫描失败！", err.Error())
 		return
 	}
 	for _, item := range dir {
 		if item.IsDir() {
-			fmt.Println("进入目录：" + handlerPath + "\\" + item.Name())
-			rangeDir(handlerPath + "\\" + item.Name())
+			color.Green("进入目录：" + JingXiu.HandlePath + "\\" + item.Name())
+			rangeDir(JingXiu.HandlePath + "\\" + item.Name())
 		} else {
 			sr := strings.Split(path, "\\")
 			if !strings.Contains(item.Name(), ".go") {
 				continue
 			}
-			fmt.Println("扫描接口文件：" + path + "\\" + item.Name())
+			color.Green("扫描接口文件：" + path + "\\" + item.Name())
 			register[sr[len(sr)-1]] = append(register[sr[len(sr)-1]], openFile(path+"\\"+item.Name())...)
 		}
 	}
@@ -106,8 +106,8 @@ func openFile(file string) []*GenRoute {
 			break
 		}
 		str := string(line)
-		if strings.Contains(str, "//") && strings.IndexAny(str, "/") == 0 {
-			results = append(results, str)
+		if attr, body, ok := Comment(str); ok {
+			results = append(results, attr+" "+body)
 		}
 	}
 	var routeList = make([]*GenRoute, 0)
@@ -127,23 +127,26 @@ func matchKeywords(info []string) *GenRoute {
 		for _, fo := range info[1:] {
 			if strings.Contains(fo, item) {
 				switch item {
-				case "@Group":
-					group := trimPrefix(fo)
-					left, right := indexBrackets(group)
-					temp.Group = group[left+1 : right]
-				case "@Route":
-					route := trimPrefix(fo)
-					left, right := indexBrackets(route)
-					temp.Route = route[left+1 : right]
-				case "@Method":
-					method := trimPrefix(fo)
-					left, right := indexBrackets(method)
-					temp.Method = strings.ToUpper(method[left+1 : right])
+				case "@Handle":
+					str := trimPrefix(fo)
+					temp.Handle = strings.Split(str, " ")[1]
+				case "@Router":
+					//	1. 匹配 /*/* 得到路由
+					if body, ok := RouteReg(fo); ok {
+						ar := strings.Split(body, " ")
+						//	2. 从 第一步中获取路由组
+						temp.Group = strings.SplitN(ar[0], "/", 3)[1]
+						// 3. 从第一步中获取子路由
+						temp.Route = strings.Replace(ar[0], "/"+temp.Group, "", 1)
+						// 4. 从第一不中获取http-method
+						left, right := indexBrackets(ar[1])
+						temp.Method = strings.ToUpper(ar[1][left+1 : right])
+					}
 				case "@Middleware":
 					mw := trimPrefix(fo)
 					left, right := indexBrackets(mw)
 					temp.Middleware = transitMiddle(strings.Split(mw[left+1:right], "|"))
-				case "@Doc":
+				case "@Summary":
 					doc := trimPrefix(fo)
 					left, right := indexBrackets(doc)
 					temp.Doc = doc[left+1 : right]
@@ -171,40 +174,14 @@ func writeRouterFile(path, key string, value []*GenRoute) {
 		"routers":      value,
 		"middleImport": middleImport(value),
 	}
-	tmp := template.Must(template.ParseFiles(templatePath + "\\route.tpl"))
-	create, err := os.OpenFile(path+"\\"+filename, os.O_CREATE, 0666)
+	tmp := template.Must(template.ParseFiles(JingXiu.TemplatePath + "\\route.tpl"))
+	file, err := os.OpenFile(path+"\\"+filename, os.O_CREATE, 0666)
 	if err != nil {
 		panic(filename + "文件创建失败")
 	}
-	defer create.Close()
-	err = tmp.Execute(create, data)
+	defer file.Close()
+	err = tmp.Execute(file, data)
 	if err != nil {
 		panic(filename + " 模板文件生成失败：" + err.Error())
 	}
-}
-
-func middleImport(value []*GenRoute) bool {
-	for _, route := range value {
-		if len(route.Middleware) > 0 {
-			return true
-		}
-	}
-	return false
-}
-
-func trimPrefix(s string) string {
-	s = strings.TrimPrefix(s, "//")
-	s = strings.TrimSpace(s)
-	return s
-}
-func indexBrackets(s string) (int, int) {
-	return strings.Index(s, "["), strings.Index(s, "]")
-}
-
-func transitMiddle(mi []string) string {
-	str := ""
-	for _, item := range mi {
-		str += C.Mapping.APIMiddlewareMapping[item] + ", "
-	}
-	return str[:len(str)-2]
 }

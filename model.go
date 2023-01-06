@@ -15,7 +15,6 @@ import (
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -68,8 +67,8 @@ func ConnectDB(path string) (conn *gorm.DB, err error) {
 	switch strings.TrimSpace(strings.ToLower(config.DB.Type)) {
 	case "mysql":
 		conn, err = gorm.Open(mysql.Open(config.DB.Source))
-	case "sqlite":
-		conn, err = gorm.Open(sqlite.Open(config.DB.Source))
+	//case "sqlite":
+	//	conn, err = gorm.Open(sqlite.Open(config.DB.Source))
 	case "postgre":
 		conn, err = gorm.Open(postgres.Open(config.DB.Source))
 	case "mongodb":

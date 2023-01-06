@@ -9,8 +9,6 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
@@ -18,6 +16,9 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gen"
 	"gorm.io/gorm"
+
+	"errors"
+	"fmt"
 	"os"
 	"strings"
 )

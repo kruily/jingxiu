@@ -53,12 +53,12 @@ func command(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Println("下载【打开输出流失败】")
+		fmt.Println("【打开输出流失败】")
 		return err
 	}
 	defer stdout.Close()
 	if err := cmd.Start(); err != nil {
-		fmt.Println("下载【命令运行输出流失败】")
+		fmt.Println("【命令运行输出流失败】")
 		return err
 	}
 	if opBytes, err := io.ReadAll(stdout); err != nil { // 读取输出结果

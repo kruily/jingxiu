@@ -64,3 +64,15 @@ func handle(ctx *cli.Context) error {
 	}
 	return nil
 }
+
+func currentHandle(filename string, gen *GenController, item string, tmp *template.Template) {
+	file, err := os.Create(gen.Path + "\\" + filename)
+	if err != nil {
+		panic(gen.Path + filename + "文件生成错误: " + err.Error())
+	}
+	defer file.Close()
+	gen.CurrentHandle = item
+	if err = tmp.Execute(file, gen); err != nil {
+		panic(file.Name() + "模板文件生成失败: " + err.Error())
+	}
+}

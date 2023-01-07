@@ -9,6 +9,7 @@
 package {{.Package}}
 
 import (
+    "common/result"
     "gateway/config"
     "github.com/gin-gonic/gin"
 )

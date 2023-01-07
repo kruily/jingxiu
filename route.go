@@ -41,7 +41,7 @@ var register = make(map[string][]*GenRoute)
 
 func route(ctx *cli.Context) error {
 	//1. read config from yaml
-	if err := Read("./etc/mapping.yaml"); err != nil {
+	if err := Read(".\\etc\\mapping.yaml"); err != nil {
 		color.Red("mapping.yaml 文件未找到，请确定mapping.yaml文件在gateway目录下")
 		return err
 	}

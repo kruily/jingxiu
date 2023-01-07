@@ -17,7 +17,7 @@ import (
 type {{.Controller}} struct {
     Config *config.Config // 全局配置项
 
-    Ok result.Result
+    OK result.Result
 
     // 可以挂载一些连接型实例对象参数，例如mysql链接实例，kafka 链接，rpc 链接，redis 链接等。
 }

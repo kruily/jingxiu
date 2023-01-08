@@ -147,9 +147,10 @@ func matchKeywords(info []string) *GenRoute {
 					left, right := indexBrackets(mw)
 					temp.Middleware = transitMiddle(strings.Split(mw[left+1:right], "|"))
 				case "@Summary":
-					doc := trimPrefix(fo)
-					left, right := indexBrackets(doc)
-					temp.Doc = doc[left+1 : right]
+					if _, body, ok := Comment(fo); ok {
+						temp.Doc = body
+					}
+					temp.Doc = ""
 				}
 			}
 		}

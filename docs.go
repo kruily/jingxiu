@@ -23,5 +23,6 @@ func docs(context *cli.Context) error {
 	if err := command("swag", "init", "-d", ".\\gateway", "-o", ".\\gateway\\docs"); err != nil {
 		return err
 	}
+
 	return nil
 }

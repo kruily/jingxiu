@@ -128,8 +128,9 @@ func matchKeywords(info []string) *GenRoute {
 			if strings.Contains(fo, item) {
 				switch item {
 				case "@Handle":
-					str := trimPrefix(fo)
-					temp.Handle = strings.Split(str, " ")[1]
+					if _, body, ok := Comment(fo); ok {
+						temp.Handle = body
+					}
 				case "@Router":
 					//	1. 匹配 /*/* 得到路由
 					if body, ok := RouteReg(fo); ok {

@@ -28,7 +28,7 @@ func init(){
 
 func {{.funcName}}(c *gin.Engine){
     group := c.Group("/{{.group}}/")
-    { {{range $k,$v := .routers}}{{if $v.Handle }}
+    { {{range $k,$v := .routers}}{{if $v.Handle}}
        // {{$v.Doc}}
        group.{{$v.Method}}("{{$v.Route}}", {{if $v.Middleware }}{{$v.Middleware}},{{end}} instance.{{$v.Handle}}){{end}}{{end}}
     }

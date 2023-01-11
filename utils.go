@@ -90,10 +90,10 @@ func Comment(comment string) (string, string, bool) {
 func BodyReg(cmt string) (string, bool) {
 	var LineExpression = regexp.MustCompile(`^(@[\S.]+)\s*(.*)`)
 	matches := LineExpression.FindStringSubmatch(cmt)
-	fmt.Println(matches)
 	if matches == nil {
 		return "", false
 	}
+	fmt.Println()
 	return matches[2], true
 }
 

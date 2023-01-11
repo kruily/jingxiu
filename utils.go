@@ -87,7 +87,7 @@ func Comment(comment string) (string, string, bool) {
 	return matches[1], matches[2], true
 }
 
-func RouteReg(cmt string) (string, bool) {
+func BodyReg(cmt string) (string, bool) {
 	var LineExpression = regexp.MustCompile(`^(@[\S.]+)\s*(.*)`)
 	matches := LineExpression.FindStringSubmatch(cmt)
 	fmt.Println(matches)

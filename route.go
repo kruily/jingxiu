@@ -128,12 +128,12 @@ func matchKeywords(info []string) *GenRoute {
 			if strings.Contains(fo, item) {
 				switch item {
 				case "@Handle":
-					if _, body, ok := Comment(fo); ok {
+					if body, ok := BodyReg(fo); ok {
 						temp.Handle = body
 					}
 				case "@Router":
 					//	1. 匹配 /*/* 得到路由
-					if body, ok := RouteReg(fo); ok {
+					if body, ok := BodyReg(fo); ok {
 						ar := strings.Split(body, " ")
 						//	2. 从 第一步中获取路由组
 						temp.Group = strings.SplitN(ar[0], "/", 3)[1]
@@ -148,7 +148,7 @@ func matchKeywords(info []string) *GenRoute {
 					left, right := indexBrackets(mw)
 					temp.Middleware = transitMiddle(strings.Split(mw[left+1:right], "|"))
 				case "@Summary":
-					if _, body, ok := Comment(fo); ok {
+					if body, ok := BodyReg(fo); ok {
 						temp.Doc = body
 					}
 					temp.Doc = ""

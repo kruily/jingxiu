@@ -93,7 +93,7 @@ func BodyReg(cmt string) (string, bool) {
 	if matches == nil {
 		return "", false
 	}
-	fmt.Println()
+	fmt.Println(matches)
 	return matches[2], true
 }
 

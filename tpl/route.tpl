@@ -20,13 +20,13 @@ func init(){
     instance = {{.higherDir}}.New{{.pak}}Handle()
     Register(RegisterRoute{
     	Ro: instance,
-        Do: func(e *gin.Engine) {
-            {{.pak}}Router(e)
+        Do: func(e *gin.Engine) { {{.pak}}Router(e) },
+    })
 }
 
 func {{.funcName}}(c *gin.Engine){
     group := c.Group("/{{.group}}/")
-    { {{range $k,$v := .routers}}{{if $v.Handle and $v.Route}}
+    { {{range $k,$v := .routers}}{{if and $v.Method  $v.Route}}
        // {{$v.Doc}}
        group.{{$v.Method}}("{{$v.Route}}", {{if $v.Middleware }}{{$v.Middleware}},{{end}} instance.{{$v.Handle}}){{end}}{{end}}
     }

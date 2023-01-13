@@ -10,6 +10,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"io"
@@ -119,16 +120,14 @@ func openFile(file string) []*GenRoute {
 
 // 匹配注释中的关键词
 func matchKeywords(info []string) *GenRoute {
-	first := trimPrefix(info[0])
-	temp := &GenRoute{
-		Handle: first,
-	}
+	temp := &GenRoute{}
 	for _, item := range C.Mapping.APIMatchMapping {
-		for _, fo := range info[1:] {
+		for _, fo := range info {
 			if strings.Contains(fo, item) {
 				switch item {
 				case "@Handle":
 					if body, ok := BodyReg(fo); ok {
+						fmt.Println(body)
 						temp.Handle = body
 					}
 				case "@Router":
@@ -151,11 +150,11 @@ func matchKeywords(info []string) *GenRoute {
 					if body, ok := BodyReg(fo); ok {
 						temp.Doc = body
 					}
-					temp.Doc = ""
 				}
 			}
 		}
 	}
+	fmt.Printf("%#v\n", temp)
 	return temp
 }
 

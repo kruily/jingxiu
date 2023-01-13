@@ -17,10 +17,7 @@ import (
 // @Description
 // @Accept json
 // @Produce  json
-// @Param
-// @Success
-// @Failure
-// @Router /{{.Package}}/ []
+// @Router /{{.Package}}/{{.CurrentHandle}} [get]
 // @Middleware []
 func (x *{{.Controller}}) {{.CurrentHandle}}(c *gin.Context) {
 	// TODO This is where you should write the logic code

@@ -154,7 +154,6 @@ func matchKeywords(info []string) *GenRoute {
 			}
 		}
 	}
-	fmt.Printf("%#v\n", temp)
 	return temp
 }
 

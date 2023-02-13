@@ -78,7 +78,6 @@ func ConnectDB(path string) (conn *gorm.DB, err error) {
 	}
 
 	if err != nil {
-		// panic(fmt.Errorf("cannot establish db connection: %w", err))
 		return nil, errors.New("数据库链接失败：" + err.Error())
 	}
 	return conn, nil

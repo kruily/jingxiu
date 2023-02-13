@@ -53,7 +53,7 @@ func start(ctx *cli.Context) error {
 		return err
 	}
 	//3. 删除.git 文件 TODO: 无法删除
-	if err := os.RemoveAll("/.git/"); err != nil {
+	if err := os.RemoveAll(".git"); err != nil {
 		color.Red("初始化项目失败...")
 		return err
 	}

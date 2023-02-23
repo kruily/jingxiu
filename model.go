@@ -38,7 +38,7 @@ func model(ctx *cli.Context) error {
 		Mode:         gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 		ModelPkgPath: "./data/model",
 	})
-	conn, err := ConnectDB(JingXiu.HandlePath + "\\gateway\\gateway.yaml")
+	conn, err := ConnectDB(JingXiu.Workspace + "\\etc\\gateway.yaml")
 	if err != nil {
 		fmt.Printf("%#v", err.Error())
 		return err

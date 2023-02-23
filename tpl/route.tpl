@@ -14,12 +14,12 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-var instance *{{.higherDir}}.{{.pak}}
+var {{.higherDir}}Obj *{{.higherDir}}.{{.pak}}
 
 func init(){
     instance = {{.higherDir}}.New{{.pak}}Handle()
     Register(RegisterRoute{
-    	Ro: instance,
+    	Ro: {{.higherDir}}Obj,
         Do: func(e *gin.Engine) { {{.pak}}Router(e) },
     })
 }
@@ -28,6 +28,6 @@ func {{.funcName}}(c *gin.Engine){
     group := c.Group("/{{.group}}/")
     { {{range $k,$v := .routers}}{{if and $v.Method  $v.Route}}
        // {{$v.Doc}}
-       group.{{$v.Method}}("{{$v.Route}}", {{if $v.Middleware }}{{$v.Middleware}},{{end}} instance.{{$v.Handle}}){{end}}{{end}}
+       group.{{$v.Method}}("{{$v.Route}}", {{if $v.Middleware }}{{$v.Middleware}},{{end}} {{.higherDir}}Obj.{{$v.Handle}}){{end}}{{end}}
     }
 }

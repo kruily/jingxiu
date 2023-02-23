@@ -20,7 +20,7 @@ func init() {
 }
 func docs(context *cli.Context) error {
 	// 生成swag 文档
-	if err := command("swag", "init", "-d", ".\\gateway", "-o", ".\\gateway\\docs"); err != nil {
+	if err := command("swag", "init", "-d", ".\\gateway", "-o", ".\\gateway\\docs", "--parseDependency", "--parseDepth=6"); err != nil {
 		return err
 	}
 	return nil

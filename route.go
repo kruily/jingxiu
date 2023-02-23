@@ -168,7 +168,6 @@ func writeRouterFile(path, key string, value []*GenRoute) {
 		"date":         time.Now().Format("01/02/2006"),
 		"doc":          key + " 路由",
 		"funcName":     funcName,
-		"higherDir":    key,
 		"pak":          firstUpper(key),
 		"group":        key,
 		"routers":      value,

@@ -14,12 +14,12 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-var {{.group}}Obj *{{.higherDir}}.{{.pak}}
+var {{.higherDir}}Obj *{{.higherDir}}.{{.pak}}
 
 func init(){
     instance = {{.group}}.New{{.pak}}Handle()
     Register(RegisterRoute{
-    	Ro: {{.group}}Obj,
+    	Ro: {{.higherDir}}Obj,
         Do: func(e *gin.Engine) { {{.pak}}Router(e) },
     })
 }

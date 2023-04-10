@@ -74,7 +74,7 @@ func currentHandle(filename string, gen *GenController, item string, tmp *templa
 	}
 	defer file.Close()
 	gen.CurrentHandle = item
-	gen.CurrentHandle = strings.ToLower(item)
+	gen.CurrentRoute = strings.ToLower(item)
 	if err = tmp.Execute(file, gen); err != nil {
 		panic(file.Name() + "模板文件生成失败: " + err.Error())
 	}

@@ -32,7 +32,7 @@ var Commands []*cli.Command
 func GetJingXiuCLI() *JingxiuCLI {
 	if JingXiu == nil {
 		JingXiu = new(JingxiuCLI)
-		JingXiu.Version = "v0.3.4"
+		JingXiu.Version = "v0.3.5"
 		JingXiu.App = &cli.App{
 			Name:     "jingxiu",
 			Usage:    "你好，这是一个项目快速开发脚手架",

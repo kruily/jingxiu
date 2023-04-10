@@ -18,7 +18,7 @@ import (
 // @Description
 // @Accept json
 // @Produce  json
-// @Router /{{.Package}}/{{.CurrentHandle}} [get]
+// @Router /{{.Package}}/{{.CurrentRoute}} [get]
 // @Success 200 {object} result.Res
 // @Failure 400 {object} result.Res
 // @Middleware []

@@ -39,6 +39,7 @@ type GenController struct {
 	Interface     string   // 要生成实现的接口
 	Handle        []string // 要生成的所有方法名称
 	CurrentHandle string   // 当前要生成的方法
+	CurrentRoute  string   // 当前要生成的子路由
 }
 
 // Create 定义生成应用控制器命令：

@@ -14,6 +14,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 	"text/template"
 	"time"
 )
@@ -50,8 +51,9 @@ func handle(ctx *cli.Context) error {
 		"Path":          JingXiu.HandlePath + "\\" + s[0],
 		"Date":          time.Now().Format("01/02/2006"),
 		"Package":       s[0],
-		"CurrentHandle": s[1],
+		"CurrentHandle": firstUpper(s[1]),
 		"Controller":    firstUpper(s[0]),
+		"CurrentRoute":  s[1],
 	}
 	filename := mapper["File"].(string)
 	file, err := os.Create(mapper["Path"].(string) + "\\" + filename)
@@ -72,6 +74,7 @@ func currentHandle(filename string, gen *GenController, item string, tmp *templa
 	}
 	defer file.Close()
 	gen.CurrentHandle = item
+	gen.CurrentHandle = strings.ToLower(item)
 	if err = tmp.Execute(file, gen); err != nil {
 		panic(file.Name() + "模板文件生成失败: " + err.Error())
 	}

@@ -27,6 +27,6 @@ func (*{{.Controller}}) Route(c *gin.Engine, do func(c *gin.Engine)) { do(c) }
 func New{{.Controller}}Handle() *{{.Controller}} {
 	return &{{.Controller}}{
 	    Config: config.C,
-	    OK:     result.OK,
+	    OK:     result.NewResult(0, "ok"),
 	}
 }

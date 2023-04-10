@@ -17,7 +17,7 @@ import (
 var {{.group}}Obj *{{.group}}.{{.pak}}
 
 func init(){
-    instance = {{.group}}.New{{.pak}}Handle()
+    {{.group}}Obj = {{.group}}.New{{.pak}}Handle()
     Register(RegisterRoute{
     	Ro: {{.group}}Obj,
         Do: func(e *gin.Engine) { {{.pak}}Router(e) },
@@ -28,6 +28,6 @@ func {{.funcName}}(c *gin.Engine){
     group := c.Group("/{{.group}}/")
     { {{range $k,$v := .routers}}{{if and $v.Method  $v.Route}}
        // {{$v.Doc}}
-       group.{{$v.Method}}("{{$v.Route}}", {{if $v.Middleware }}{{$v.Middleware}},{{end}} {{.$v.Group}}Obj.{{$v.Handle}}){{end}}{{end}}
+       group.{{$v.Method}}("{{$v.Route}}", {{if $v.Middleware }}{{$v.Middleware}},{{end}} {{$v.Group}}Obj.{{$v.Handle}}){{end}}{{end}}
     }
 }

@@ -11,6 +11,8 @@ package {{.Package}}
 import (
     "github.com/gin-gonic/gin"
 )
+
+
 // {{.CurrentHandle}}
 // @Handle {{.CurrentHandle}}
 // @Tags {{.Package}}
